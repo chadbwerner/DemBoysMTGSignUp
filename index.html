@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Commander Pods — Weekly Sign-Up</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --felt: #060a16;
+    --felt-2: #101c3e;
+    --card: #101c3e;
+    --card-line: #c9a24d;
+    --slot: #182a54;
+    --slot-line: #3a4d82;
+    --title-bar: #0b1530;
+    --title-bar-2: #182a5c;
+    --ivory: #f2e6c2;
+    --ink: #f2e6c2;
+    --ink-soft: #94a0c9;
+    --ink-on-gold: #241a08;
+    --ink-on-gold-soft: #5c4419;
+    --host-fill: #d9b463;
+    --host-line: #96721f;
+    --backup-fill: #3a1520;
+    --backup-line: #6e2535;
+    --backup-panel: #070c1a;
+    --accent: #c9a24d;
+    --danger: #c1594a;
+    --focus: #e8c873;
+  }
+
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+  }
+
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --felt: #101c3e;
+      --felt-2: #1c2f66;
+      --card: #182a54;
+      --slot: #223668;
+      --backup-panel: #0c1530;
+    }
+  }
+
+  :root[data-theme="light"] {
+    --felt: #101c3e;
+    --felt-2: #1c2f66;
+    --card: #182a54;
+    --slot: #223668;
+    --backup-panel: #0c1530;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+    background:
+      radial-gradient(ellipse at top, var(--felt-2) 0%, var(--felt) 60%),
+      var(--felt);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    color: var(--ivory);
+    padding: 32px 20px 64px;
+  }
+
+  .wrap {
+    max-width: 1180px;
+    margin: 0 auto;
+  }
+
+  header.page-head {
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-optical-sizing: auto;
+    font-size: clamp(2rem, 4vw, 3rem);
+    margin: 0 0 6px;
+    letter-spacing: -0.01em;
+  }
+
+  .subhead {
+    color: #cfc4a3;
+    font-size: 0.98rem;
+    margin: 0 0 4px;
+  }
+
+  .playgroup-btn {
+    display: inline-block;
+    margin: 14px 0 16px;
+    padding: 10px 24px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--host-fill), var(--host-line));
+    color: var(--ink-on-gold);
+    font-weight: 700;
+    font-size: 0.88rem;
+    text-decoration: none;
+    border: 1px solid rgba(0,0,0,0.3);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+  }
+
+  .playgroup-btn:hover,
+  .playgroup-btn:focus-visible {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+  }
+
+  .reset-line {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    padding: 7px 16px;
+    border-radius: 999px;
+    background: rgba(0,0,0,0.22);
+    border: 1px solid rgba(233, 216, 160, 0.25);
+    font-size: 0.85rem;
+    color: #e8d8a0;
+  }
+
+  .reset-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #7fcf8a;
+    box-shadow: 0 0 6px #7fcf8a;
+    flex-shrink: 0;
+  }
+
+  .grid {
+    margin-top: 32px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 22px;
+  }
+
+  .day-card {
+    background: var(--card);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.35), 0 1px 0 rgba(255,255,255,0.06) inset;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgba(0,0,0,0.25);
+  }
+
+  .day-card.is-today {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .day-card.has-host {
+    box-shadow: 0 0 0 2px var(--host-fill), 0 0 22px rgba(217, 180, 99, 0.45), 0 10px 24px rgba(0,0,0,0.35);
+  }
+
+  .day-title {
+    background: linear-gradient(160deg, var(--title-bar-2), var(--title-bar));
+    color: var(--ivory);
+    padding: 14px 16px 12px;
+    position: relative;
+  }
+
+  .day-title h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 1.25rem;
+    margin: 0;
+    line-height: 1.1;
+  }
+
+  .day-title .date {
+    font-size: 0.78rem;
+    color: rgba(244, 236, 216, 0.75);
+    margin-top: 3px;
+  }
+
+  .today-flag {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    font-size: 0.68rem;
+    background: var(--accent);
+    color: #2a1c05;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 999px;
+  }
+
+  .slots {
+    padding: 14px 14px 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .slot-label {
+    font-size: 0.68rem;
+    color: var(--ink-soft);
+    margin: 2px 2px -2px;
+  }
+
+  .slot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    border-radius: 7px;
+    padding: 9px 10px;
+    background: var(--slot);
+    border: 1px solid var(--slot-line);
+    min-height: 40px;
+  }
+
+  .slot.host {
+    background: var(--host-fill);
+    border-color: var(--host-line);
+  }
+
+  .slot.backup {
+    background: var(--backup-fill);
+    border-color: var(--backup-line);
+  }
+
+  .slot-name {
+    font-size: 0.92rem;
+    color: var(--ink);
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .slot.host .slot-name {
+    color: var(--ink-on-gold);
+  }
+
+  .slot-empty-btn {
+    background: none;
+    border: none;
+    font-family: inherit;
+    font-size: 0.88rem;
+    color: var(--ink-soft);
+    font-style: italic;
+    cursor: pointer;
+    text-align: left;
+    padding: 0;
+    width: 100%;
+  }
+
+  .slot-empty-btn:hover,
+  .slot-empty-btn:focus-visible {
+    color: var(--ink);
+  }
+
+  .slot.host .slot-empty-btn {
+    color: var(--ink-on-gold-soft);
+  }
+
+  .slot.host .slot-empty-btn:hover,
+  .slot.host .slot-empty-btn:focus-visible {
+    color: var(--ink-on-gold);
+  }
+
+  .host-caption {
+    font-size: 0.72rem;
+    font-style: italic;
+    color: var(--ink-soft);
+    margin: -2px 2px 2px;
+  }
+
+  .pod-status {
+    display: none;
+    margin: 10px 14px 0;
+    padding: 7px 10px;
+    border-radius: 7px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-align: center;
+  }
+
+  .pod-status.visible {
+    display: block;
+  }
+
+  .pod-status.count-2 {
+    background: rgba(217, 180, 99, 0.16);
+    color: #e8c873;
+    border: 1px solid rgba(217, 180, 99, 0.4);
+  }
+
+  .pod-status.count-3 {
+    background: rgba(193, 89, 74, 0.2);
+    color: #f0a58f;
+    border: 1px solid rgba(193, 89, 74, 0.5);
+  }
+
+  .pod-status.count-4 {
+    background: linear-gradient(135deg, rgba(217, 180, 99, 0.35), rgba(193, 89, 74, 0.35));
+    color: #fff3d6;
+    border: 1px solid rgba(217, 180, 99, 0.6);
+  }
+
+  .slot-clear {
+    background: none;
+    border: none;
+    color: var(--danger);
+    font-size: 1.05rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 2px 4px;
+    border-radius: 5px;
+    flex-shrink: 0;
+  }
+
+  .slot-clear:hover,
+  .slot-clear:focus-visible {
+    background: rgba(143, 58, 46, 0.15);
+  }
+
+  .slot-input-row {
+    display: flex;
+    gap: 6px;
+    width: 100%;
+  }
+
+  .slot-input-row input {
+    flex: 1;
+    min-width: 0;
+    border: 1px solid var(--slot-line);
+    border-radius: 5px;
+    padding: 6px 8px;
+    font-family: inherit;
+    font-size: 0.88rem;
+    background: rgba(255,255,255,0.85);
+    color: #1c1408;
+  }
+
+  .slot-input-row button {
+    border: none;
+    border-radius: 5px;
+    padding: 0 10px;
+    font-family: inherit;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .slot-input-row .save-btn {
+    background: var(--title-bar);
+    color: var(--ivory);
+  }
+
+  .slot-input-row .cancel-btn {
+    background: transparent;
+    color: var(--ink-soft);
+  }
+
+  *:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 1px;
+  }
+
+  .backups-toggle {
+    margin: 6px 14px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: transparent;
+    border: 1px dashed var(--slot-line);
+    color: var(--ink-soft);
+    border-radius: 7px;
+    padding: 8px 10px;
+    font-family: inherit;
+    font-size: 0.8rem;
+    cursor: pointer;
+  }
+
+  .backups-toggle .chev {
+    transition: transform 0.15s ease;
+    display: inline-block;
+  }
+
+  .backups-toggle[aria-expanded="true"] .chev {
+    transform: rotate(180deg);
+  }
+
+  .backups-panel {
+    background: var(--backup-panel);
+    padding: 0 14px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease, padding 0.2s ease;
+  }
+
+  .backups-panel.open {
+    padding: 16px 14px 14px;
+    max-height: 420px;
+  }
+
+  .backups-panel .slot-label {
+    color: #c9a24d;
+    margin: 0 2px 8px;
+    line-height: 1.3;
+  }
+
+  .backups-panel .slots {
+    padding: 0;
+  }
+
+  footer.note {
+    text-align: center;
+    margin-top: 40px;
+    color: #a99f82;
+    font-size: 0.8rem;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 640px) {
+    body {
+      padding: 20px 12px 48px;
+    }
+
+    .grid {
+      grid-template-columns: 1fr;
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    h1 {
+      font-size: 1.65rem;
+    }
+
+    .subhead {
+      font-size: 0.88rem;
+    }
+
+    .playgroup-btn {
+      display: block;
+      text-align: center;
+      margin: 12px auto 14px;
+      max-width: 320px;
+    }
+
+    .reset-line {
+      font-size: 0.78rem;
+      padding: 6px 12px;
+    }
+
+    .day-title {
+      padding: 12px 14px 10px;
+    }
+
+    .day-title h2 {
+      font-size: 1.15rem;
+    }
+
+    .slots {
+      padding: 12px 12px 4px;
+    }
+
+    .slot {
+      min-height: 44px;
+      padding: 10px 12px;
+    }
+
+    .slot-name,
+    .slot-empty-btn {
+      font-size: 0.95rem;
+    }
+
+    .backups-toggle {
+      margin: 6px 12px 12px;
+      padding: 10px 12px;
+    }
+
+    .backups-panel {
+      padding-left: 12px;
+      padding-right: 12px;
+    }
+
+    footer.note {
+      font-size: 0.76rem;
+      padding: 0 4px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="page-head">
+    <h1>Dem Boyz Commander Pods</h1>
+    <a class="playgroup-btn" href="https://playgroup.gg/playgroups/join?playgroup_invite_token=b556a2adc53a5a6ed011e195964c2845" target="_blank" rel="noopener noreferrer">Join Playgroup to Track Stats</a>
+    <p class="subhead" id="weekRange">Loading week…</p>
+    <div class="reset-line"><span class="reset-dot"></span><span id="resetText">Sign-ups refresh Monday at 12:00 AM</span></div>
+  </header>
+
+  <div class="grid" id="grid"></div>
+
+  <footer class="note">
+    Tap an open seat to add your name. Host plus three players — the first four sign-ups — are guaranteed a seat.<br>
+    Open spots and second-table calls go to backups in the order they signed up.<br>
+    We keep pods at 4 on purpose: four-player Commander is the most efficient format, and it keeps games moving.
+  </footer>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+<script>
+(function() {
+  const DAYS = [
+    { id: 'mon', label: 'Monday' },
+    { id: 'tue', label: 'Tuesday' },
+    { id: 'wed', label: 'Wednesday' },
+    { id: 'thu', label: 'Thursday' },
+    { id: 'fri', label: 'Friday' },
+    { id: 'sat', label: 'Saturday' },
+    { id: 'sun', label: 'Sunday' },
+  ];
+  const MONTH_ABBR = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  function pad(n) { return n < 10 ? '0' + n : '' + n; }
+  function localDateKey(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+  function mondayOf(d) {
+    const copy = new Date(d);
+    copy.setHours(0, 0, 0, 0);
+    const day = copy.getDay(); // 0 Sun .. 6 Sat
+    const diff = (day === 0) ? -6 : (1 - day);
+    copy.setDate(copy.getDate() + diff);
+    return copy;
+  }
+  function addDays(d, n) {
+    const copy = new Date(d);
+    copy.setDate(copy.getDate() + n);
+    return copy;
+  }
+  function fmtShort(d) { return d.toLocaleDateString(undefined, { weekday: undefined }); }
+
+  function emptyDay() {
+    return { host: null, players: [null, null, null], backups: [null, null, null, null] };
+  }
+
+  let db = null;
+  let unsubs = [];
+  let weekMonday = mondayOf(new Date());
+  let weekKey = localDateKey(weekMonday);
+  const state = {}; // dayId -> day data
+  const expanded = {}; // dayId -> bool, backups panel open
+
+  const gridEl = document.getElementById('grid');
+  const weekRangeEl = document.getElementById('weekRange');
+  const resetTextEl = document.getElementById('resetText');
+
+  function docIdFor(dayId) { return weekKey + '_' + dayId; }
+
+  function renderWeekRange() {
+    const start = weekMonday;
+    const end = addDays(weekMonday, 6);
+    const startStr = MONTH_ABBR[start.getMonth()] + ' ' + start.getDate();
+    const endStr = MONTH_ABBR[end.getMonth()] + ' ' + end.getDate();
+    weekRangeEl.textContent = 'Week of ' + startStr + ' – ' + endStr;
+  }
+
+  function updateResetCountdown() {
+    const now = new Date();
+    const nextMonday = mondayOf(addDays(now, 7));
+    // if today is already Monday and it's before/after midnight edge, mondayOf(now) is this week's Monday.
+    // We want the *next* occurrence of Monday 00:00 strictly after now.
+    let target = mondayOf(now);
+    if (target.getTime() <= now.getTime()) {
+      target = addDays(target, 7);
+    }
+    const ms = target.getTime() - now.getTime();
+    const totalMinutes = Math.floor(ms / 60000);
+    const days = Math.floor(totalMinutes / (60 * 24));
+    const hours = Math.floor((totalMinutes % (60 * 24)) / 60);
+    const mins = totalMinutes % 60;
+    let piece;
+    if (days > 0) piece = days + 'd ' + hours + 'h';
+    else if (hours > 0) piece = hours + 'h ' + mins + 'm';
+    else piece = mins + 'm';
+    resetTextEl.textContent = 'Resets in ' + piece + ' (Monday 12:00 AM)';
+  }
+
+  function isTodayId(dayId, index) {
+    const d = addDays(weekMonday, index);
+    return localDateKey(d) === localDateKey(new Date());
+  }
+
+  function buildCard(day, index) {
+    const dateObj = addDays(weekMonday, index);
+    const dateLabel = MONTH_ABBR[dateObj.getMonth()] + ' ' + dateObj.getDate();
+
+    const card = document.createElement('section');
+    card.className = 'day-card';
+    card.dataset.dayId = day.id;
+    if (isTodayId(day.id, index)) card.classList.add('is-today');
+
+    const titleBar = document.createElement('div');
+    titleBar.className = 'day-title';
+    titleBar.innerHTML = '<h2>' + day.label + '</h2><div class="date">' + dateLabel + '</div>' +
+      (isTodayId(day.id, index) ? '<span class="today-flag">Today</span>' : '');
+    card.appendChild(titleBar);
+
+    const status = document.createElement('div');
+    status.className = 'pod-status';
+    card.appendChild(status);
+
+    const slotsWrap = document.createElement('div');
+    slotsWrap.className = 'slots';
+    slotsWrap.innerHTML =
+      '<div class="slot-label">Host</div>' +
+      '<div class="slot host" data-role="host"></div>' +
+      '<div class="host-caption">Host in charge of assembling pod</div>' +
+      '<div class="slot-label">Players</div>' +
+      '<div class="slot" data-role="player" data-index="0"></div>' +
+      '<div class="slot" data-role="player" data-index="1"></div>' +
+      '<div class="slot" data-role="player" data-index="2"></div>';
+    card.appendChild(slotsWrap);
+
+    const toggle = document.createElement('button');
+    toggle.className = 'backups-toggle';
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.innerHTML = '<span class="backup-count">Backups (0/4)</span><span class="chev">▾</span>';
+    toggle.addEventListener('click', function() {
+      expanded[day.id] = !expanded[day.id];
+      panel.classList.toggle('open', expanded[day.id]);
+      toggle.setAttribute('aria-expanded', expanded[day.id] ? 'true' : 'false');
+    });
+    card.appendChild(toggle);
+
+    const panel = document.createElement('div');
+    panel.className = 'backups-panel';
+    panel.innerHTML =
+      '<div class="slot-label">Backups / potential 2nd game</div>' +
+      '<div class="slots">' +
+      '<div class="slot backup" data-role="backup" data-index="0"></div>' +
+      '<div class="slot backup" data-role="backup" data-index="1"></div>' +
+      '<div class="slot backup" data-role="backup" data-index="2"></div>' +
+      '<div class="slot backup" data-role="backup" data-index="3"></div>' +
+      '</div>';
+    card.appendChild(panel);
+
+    return card;
+  }
+
+  function renderSlot(el, name, onSave, onClear) {
+    el.innerHTML = '';
+    if (name) {
+      const nameSpan = document.createElement('span');
+      nameSpan.className = 'slot-name';
+      nameSpan.textContent = name;
+      const clearBtn = document.createElement('button');
+      clearBtn.className = 'slot-clear';
+      clearBtn.setAttribute('aria-label', 'Clear this seat');
+      clearBtn.textContent = '×';
+      clearBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        onClear();
+      });
+      el.appendChild(nameSpan);
+      el.appendChild(clearBtn);
+    } else {
+      const btn = document.createElement('button');
+      btn.className = 'slot-empty-btn';
+      btn.textContent = 'Open — tap to join';
+      btn.addEventListener('click', function() {
+        showInput();
+      });
+      el.appendChild(btn);
+    }
+
+    function showInput() {
+      el.innerHTML = '';
+      const row = document.createElement('div');
+      row.className = 'slot-input-row';
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.maxLength = 30;
+      input.placeholder = 'Your name';
+      const save = document.createElement('button');
+      save.className = 'save-btn';
+      save.textContent = 'Add';
+      const cancel = document.createElement('button');
+      cancel.className = 'cancel-btn';
+      cancel.textContent = 'Cancel';
+      row.appendChild(input);
+      row.appendChild(save);
+      row.appendChild(cancel);
+      el.appendChild(row);
+      input.focus();
+
+      function commit() {
+        const val = input.value.trim();
+        if (val) onSave(val);
+        else renderSlot(el, null, onSave, onClear);
+      }
+      save.addEventListener('click', commit);
+      input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') commit();
+        if (e.key === 'Escape') renderSlot(el, null, onSave, onClear);
+      });
+      cancel.addEventListener('click', function() {
+        renderSlot(el, null, onSave, onClear);
+      });
+    }
+  }
+
+  function renderCardData(card, dayId) {
+    const data = state[dayId] || emptyDay();
+
+    card.classList.toggle('has-host', !!data.host);
+
+    const hostEl = card.querySelector('[data-role="host"]');
+    renderSlot(hostEl, data.host,
+      function(name) { writeField(dayId, function(d) { d.host = name; }); },
+      function() { writeField(dayId, function(d) { d.host = null; }); }
+    );
+
+    for (let i = 0; i < 3; i++) {
+      const pEl = card.querySelector('[data-role="player"][data-index="' + i + '"]');
+      (function(idx) {
+        renderSlot(pEl, data.players[idx],
+          function(name) { writeField(dayId, function(d) { d.players[idx] = name; }); },
+          function() { writeField(dayId, function(d) { d.players[idx] = null; }); }
+        );
+      })(i);
+    }
+
+    for (let i = 0; i < 4; i++) {
+      const bEl = card.querySelector('[data-role="backup"][data-index="' + i + '"]');
+      (function(idx) {
+        renderSlot(bEl, data.backups[idx],
+          function(name) { writeField(dayId, function(d) { d.backups[idx] = name; }); },
+          function() { writeField(dayId, function(d) { d.backups[idx] = null; }); }
+        );
+      })(i);
+    }
+
+    const filledBackups = data.backups.filter(Boolean).length;
+    const countLabel = card.querySelector('.backup-count');
+    if (countLabel) countLabel.textContent = 'Backups (' + filledBackups + '/4)';
+
+    const filledSeats = (data.host ? 1 : 0) + data.players.filter(Boolean).length;
+    const statusEl = card.querySelector('.pod-status');
+    if (statusEl) {
+      statusEl.classList.remove('count-2', 'count-3', 'count-4', 'visible');
+      if (filledSeats === 2) {
+        statusEl.textContent = '🔥 Heating up';
+        statusEl.classList.add('count-2', 'visible');
+      } else if (filledSeats === 3) {
+        statusEl.textContent = '🔥🔥 On fire';
+        statusEl.classList.add('count-3', 'visible');
+      } else if (filledSeats >= 4) {
+        statusEl.textContent = '🎉 We got a game!!';
+        statusEl.classList.add('count-4', 'visible');
+      }
+    }
+  }
+
+  function writeField(dayId, mutator) {
+    if (!db) return;
+    const current = state[dayId] ? JSON.parse(JSON.stringify(state[dayId])) : emptyDay();
+    mutator(current);
+    state[dayId] = current;
+    const card = gridEl.querySelector('[data-day-id="' + dayId + '"]');
+    if (card) renderCardData(card, dayId);
+    db.doc('pods/' + docIdFor(dayId)).set(current).catch(function(err) {
+      console.error('write failed', err);
+    });
+  }
+
+  function teardownSubscriptions() {
+    unsubs.forEach(function(u) { try { u(); } catch (e) {} });
+    unsubs = [];
+  }
+
+  function subscribeAll() {
+    if (!db) return;
+    teardownSubscriptions();
+    DAYS.forEach(function(day) {
+      state[day.id] = emptyDay();
+      const ref = db.doc('pods/' + docIdFor(day.id));
+      const unsub = ref.onSnapshot(function(snap) {
+        state[day.id] = snap.exists ? Object.assign(emptyDay(), snap.data()) : emptyDay();
+        if (!state[day.id].players) state[day.id].players = [null, null, null];
+        if (!state[day.id].backups) state[day.id].backups = [null, null, null, null];
+        const card = gridEl.querySelector('[data-day-id="' + day.id + '"]');
+        if (card) renderCardData(card, day.id);
+      }, function(err) {
+        console.error('snapshot error', err);
+      });
+      unsubs.push(unsub);
+    });
+  }
+
+  function buildGrid() {
+    gridEl.innerHTML = '';
+    DAYS.forEach(function(day, i) {
+      const card = buildCard(day, i);
+      gridEl.appendChild(card);
+      renderCardData(card, day.id);
+    });
+  }
+
+  function checkWeekRollover() {
+    const nowMonday = mondayOf(new Date());
+    const nowKey = localDateKey(nowMonday);
+    if (nowKey !== weekKey) {
+      weekMonday = nowMonday;
+      weekKey = nowKey;
+      renderWeekRange();
+      buildGrid();
+      subscribeAll();
+    }
+  }
+
+  function init() {
+    renderWeekRange();
+    buildGrid();
+    updateResetCountdown();
+    setInterval(updateResetCountdown, 30000);
+    setInterval(checkWeekRollover, 60000);
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBLbcUf5ocp-aBWNFDPZRjRd1t9CqvXnUU",
+      authDomain: "dem-boys-sign-up.firebaseapp.com",
+      projectId: "dem-boys-sign-up",
+      storageBucket: "dem-boys-sign-up.firebasestorage.app",
+      messagingSenderId: "1005183254785",
+      appId: "1:1005183254785:web:3e471f376dd7d98adadb00"
+    };
+
+    try {
+      firebase.initializeApp(firebaseConfig);
+      db = firebase.firestore();
+      subscribeAll();
+    } catch (err) {
+      console.error('Firebase init failed', err);
+    }
+  }
+
+  init();
+})();
+</script>
+
+</body>
+</html>
